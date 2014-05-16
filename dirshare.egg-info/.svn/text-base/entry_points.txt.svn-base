@@ -1,6 +1,0 @@
-[paste.app_factory]
-main = dirshare:main
-
-[console_scripts]
-dirshare = dirshare.cli:main
-
