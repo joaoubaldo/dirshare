@@ -1,9 +1,7 @@
 CHANGES.txt
 MANIFEST.in
 README.txt
-cache.db
 development.ini
-production.ini
 setup.py
 dirshare/__init__.py
 dirshare/cli.py
@@ -26,12 +24,7 @@ dirshare/templates/base.mako
 dirshare/templates/home.mako
 dirshare/templates/view_image.mako
 dirshare/views/__init__.py
-dirshare/views/__init__.pyc
 dirshare/views/home.py
-dirshare/views/home.pyc
 dirshare/views/image.py
-dirshare/views/image.pyc
 dirshare/views/stream_image.py
-dirshare/views/stream_image.pyc
 dirshare/views/zip_page.py
-dirshare/views/zip_page.pyc
