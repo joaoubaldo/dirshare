@@ -13,6 +13,12 @@ Installation
 
 > python setup.py install
 
+
+Requirements
+------------
+Besides python requirements that setuptools install, a mongo database server is needed.
+
+
 Configuration
 -------------
 The configuration file is a Pyramid-style ini file. Apart from server configuration, the following parameters should be configured:
