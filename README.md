@@ -55,3 +55,7 @@ Usage
                              Server configuration file path
       -d DIRECTORY, --directory=DIRECTORY
                              Shared directory path (will override config file)
+
+
+Example:
+> dirshare -c production.ini -c /home/user/Pictures
