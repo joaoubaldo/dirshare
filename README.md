@@ -38,10 +38,10 @@ The configuration file is a Pyramid-style ini file. Apart from server configurat
 
 > resize_quality = 85
 
-
-* _image\_sizes_ is a space separated list of (re)sizes available in a form of MAX\_WIDTHxMAX\_HEIGHT. The image is resized to these values, with its aspect ratio preserved.
-
-* The first element in _image\_sizes_ is the thumbnail size. Keyword _full_ is the original image.
+* _images\_per\_page_ is the maximum number images to display per page. This parameter can be overwritten in HTTP request, with 'pp' GET parameter.  
+* _image\_sizes_ is a space separated list of (re)sizes available in a form of MAX\_WIDTHxMAX\_HEIGHT. The image is resized to these values, with its aspect ratio preserved. The first element in _image\_sizes_ is the thumbnail size. Keyword _full_ is the original image.
+* _resize\_format_ is the encoder to use in image resizes.
+* _resize\_quality_ is the quality parameter used by image encoder.
 
 
 Usage
