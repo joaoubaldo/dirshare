@@ -57,5 +57,10 @@ Usage
                              Shared directory path (will override config file)
 
 
-Example:
-> dirshare -c production.ini -c /home/user/Pictures
+Examples.
+
+Share production.ini's images_root:
+> dirshare -c production.ini
+
+Override production.ini's images_root parameter:
+> dirshare -c production.ini -d /home/user/Pictures
