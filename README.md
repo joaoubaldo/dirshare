@@ -21,12 +21,12 @@ Besides python requirements that setuptools install, a mongo database server is 
 
 Configuration
 -------------
-The configuration file is a Pyramid-style ini file. Apart from server configuration, the following parameters should be configured:
-> mongo.host = localhost
+The configuration file is a Pyramid-style ini file (see example.ini). Apart from server configuration, the following parameters should be configured:
+> mongo_host = localhost
 
-> mongo.port = 27017
+> mongo_port = 27017
 
-> mongo.db = dir_db
+> mongo_db = dir_db
 
 > images_per_page = 25
 
@@ -47,13 +47,14 @@ The configuration file is a Pyramid-style ini file. Apart from server configurat
 Usage
 -----
     Usage: dirshare [options]
-    
+
     Options:
-       -h, --help            show this help message and exit
-       -c CONFIG, --config=CONFIG
-                             Server configuration file path
-      -d DIRECTORY, --directory=DIRECTORY
-                             Shared directory path (will override config file)
+      -h, --help            show this help message and exit
+      -c CONFIG, --config=CONFIG
+                            Server configuration file path
+      -r IMAGES_ROOT, --images-root=IMAGES_ROOT
+                            Root directory to share (will override config file)
+
 
 
 Examples.
