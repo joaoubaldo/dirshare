@@ -11,6 +11,10 @@ The motivation to build this application, is that, I have the need to quickly an
 Installation
 ------------
 
+From PyPI:
+> pip install dirshare
+
+Or:
 > python setup.py install
 
 
