@@ -1,6 +1,6 @@
 CHANGES.txt
 MANIFEST.in
-README.txt
+README.md
 development.ini
 example.ini
 setup.py

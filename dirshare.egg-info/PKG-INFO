@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: dirshare
-Version: 0.2.1.1
+Version: 0.3
 Summary: dirshare
 Home-page: http://b.joaoubaldo.com
 Author: Joao Coutinho
@@ -74,10 +74,9 @@ Description: dirshare
         > dirshare -c example.ini -r ~/Pictures
         
         
-        0.0
+        0.3
         ---
-        
-        -  Initial version
+        -  First public release
         
 Keywords: web pyramid pylons
 Platform: UNKNOWN
