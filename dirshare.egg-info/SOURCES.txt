@@ -2,6 +2,7 @@ CHANGES.txt
 MANIFEST.in
 README.txt
 development.ini
+example.ini
 setup.py
 dirshare/__init__.py
 dirshare/cli.py
