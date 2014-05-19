@@ -60,7 +60,7 @@ Usage
 Examples.
 
 Share production.ini's images_root:
-> dirshare -c production.ini
+> dirshare -c example.ini
 
 Override production.ini's images_root parameter:
-> dirshare -c production.ini -d /home/user/Pictures
+> dirshare -c example.ini -r ~/Pictures
