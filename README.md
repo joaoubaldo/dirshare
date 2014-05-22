@@ -5,7 +5,7 @@ Description
 -----------
 **dirshare** is a small WSGI Python application, that comfortably shares (via HTTP) images within a specific root path, that leverages thumbnail caching (with MongoDb), instantaneous image resizing and zip file creation.
 
-The motivation to build this application, is that, I have the need to quickly and remotely browse a large collection of photos, just to pick a few, however I don't want to have a dedicated web gallery nor I want to modify the original file structure.
+The motivation to build this application, is that, I have the need to quickly and remotely browse a large collection of photos, only to pick a few of them, however I don't want to have a dedicated web gallery nor I want to modify the original file structure.
 
 
 Installation
