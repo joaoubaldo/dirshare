@@ -70,4 +70,4 @@ Override production.ini's images_root parameter:
 > dirshare -c example.ini -r ~/Pictures
 
 
-Once dirshare is running, point your browser to its port.
+Once dirshare is running, point your browser to its port (default 6543).
