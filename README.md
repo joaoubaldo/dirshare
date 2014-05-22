@@ -3,9 +3,9 @@ dirshare
 
 Description
 -----------
-**dirshare** is a small WSGI Python application, that comfortably shares images within a specific root path, with the added benefit of thumbnail caching (with MongoDb), real-time image resizing and instantaneous zip file creation.
+**dirshare** is a small WSGI Python application, that comfortably shares (via HTTP) images within a specific root path, that leverages thumbnail caching (with MongoDb), instantaneous image resizing and zip file creation.
 
-The motivation to build this application, is that, I have the need to quickly and remotely browse a large collection of photos, just to pick a few photos, however I don't want to have a dedicated web gallery nor I want to modify the original file structure.
+The motivation to build this application, is that, I have the need to quickly and remotely browse a large collection of photos, just to pick a few, however I don't want to have a dedicated web gallery nor I want to modify the original file structure.
 
 
 Installation
@@ -68,3 +68,6 @@ Share production.ini's images_root:
 
 Override production.ini's images_root parameter:
 > dirshare -c example.ini -r ~/Pictures
+
+
+Once dirshare is running, point your browser to its port.
