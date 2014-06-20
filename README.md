@@ -22,7 +22,7 @@ Or:
 Requirements
 ------------
 
-Besides python requirements that setuptools install, a mongo database server is needed.
+Besides dependencies that setuptools install, a mongo database server is needed.
 
 
 Configuration
