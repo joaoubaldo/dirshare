@@ -19,6 +19,10 @@ dirshare/static/css/bootstrap-theme.min.css
 dirshare/static/css/bootstrap.css
 dirshare/static/css/bootstrap.min.css
 dirshare/static/css/theme.css
+dirshare/static/fonts/glyphicons-halflings-regular.eot
+dirshare/static/fonts/glyphicons-halflings-regular.svg
+dirshare/static/fonts/glyphicons-halflings-regular.ttf
+dirshare/static/fonts/glyphicons-halflings-regular.woff
 dirshare/static/js/angular.min.js
 dirshare/static/js/app.js
 dirshare/static/js/bootstrap.js
