@@ -14,6 +14,77 @@ from paste.deploy import loadapp
 from paste.deploy import loadserver
 
 
+
+ini_template = '''
+###
+# app configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html
+###
+
+[app:main]
+use = egg:dirshare
+
+pyramid.reload_templates = false
+pyramid.debug_authorization = false
+pyramid.debug_notfound = false
+pyramid.debug_routematch = false
+pyramid.default_locale_name = en
+
+mako.directories = dirshare:templates
+
+# MongoDB configuration
+mongo_host = localhost
+mongo_port = 27017
+mongo_db = dirshare
+
+images_per_page = 10
+image_sizes = 128x128 600x600 1000x1000 full
+images_root = ~/
+resize_format = JPEG
+resize_quality = 90
+
+###
+# wsgi server configuration
+###
+
+[server:main]
+use = egg:waitress#main
+host = 127.0.0.1
+port = 6543
+
+###
+# logging configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/logging.html
+###
+
+[loggers]
+keys = root, dirshare
+
+[handlers]
+keys = console
+
+[formatters]
+keys = generic
+
+[logger_root]
+level = INFO
+handlers = console
+
+[logger_dirshare]
+level = DEBUG
+handlers =
+qualname = dirshare
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = NOTSET
+formatter = generic
+
+[formatter_generic]
+format = %(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s
+'''
+
 def main():
     """
     Entry point
@@ -28,7 +99,17 @@ def main():
         dest="images_root", action="store",
         help="Root directory to share (will override config file)")
 
+    parser.add_option("-e", "--example-ini",
+        dest="example_ini", action="store",
+        help="Create an example ini file")
+
     (options, args) = parser.parse_args()
+
+    if options.example_ini:
+        f = open(options.example_ini, 'w')
+        f.write(ini_template)
+        f.close()
+        return
 
     if not options.config:
         parser.error("No config file specified")

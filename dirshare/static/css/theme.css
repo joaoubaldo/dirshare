@@ -1,0 +1,48 @@
+.full-width {
+    max-width: 100%;
+}
+
+.xscroll-only {
+    overflow: hidden;
+    overflow-x: auto;
+}
+
+.italic-text {
+    font-style: italic;
+}
+
+
+.pointer {
+    cursor: pointer;
+}
+
+.table {
+    display: table-row;
+    width: 100%;
+}
+
+.cell-middle {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.cell-thumbnail {
+    padding: 4px;
+}
+
+.cell-thumbnail:hover {
+    opacity: 0.6;
+}
+
+
+.thumbnail.selected {
+    border-color: red;
+    opacity: 0.5;
+}
+
+.cell-thumbnail img.selected{
+    border: 1px solid red;
+    opacity: 0.5;
+}
+

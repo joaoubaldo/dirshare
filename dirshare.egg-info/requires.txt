@@ -5,3 +5,4 @@ pyramid_mako
 waitress
 pymongo
 pillow
+exifread

@@ -15,11 +15,12 @@ requires = [
     'pyramid_mako',
     'waitress',
     'pymongo',
-    'pillow'
+    'pillow',
+    'exifread'
     ]
 
 setup(name='dirshare',
-      version='0.3',
+      version='0.6',
       description='dirshare',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[

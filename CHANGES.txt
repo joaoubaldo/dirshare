@@ -1,3 +1,13 @@
+0.6
+---
+- Major change: The whole application is now a single page, built with AngularJS and Bootstrap framework.
+- New: ETag header is now used. Performance is significantly improved.
+- New: Two view modes. Grid: useful for desktops. Scroll: better display for mobile devices.
+- New: Select mode: Add any image to the basket. At any time, go to the basket to view or export (zip) the whole selection.
+- New: EXIF information is now read and saved, for each image file.
+- New: Content-disposition http header is now used for zip and images.
+- New: unit tests created.
+
 0.3
 ---
 -  First public release
