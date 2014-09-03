@@ -1,5 +1,7 @@
 import unittest
+import logging
 import os
+import sys
 from base64 import b64decode
 
 from pyramid import testing
@@ -8,32 +10,33 @@ from pymongo.mongo_client import MongoClient
 
 
 class ViewTests(unittest.TestCase):
+
+    def setdb(self, scheme):
+        from .data_access import data_access_factory
+
+        if scheme == 'mongodb':
+            self.db = data_access_factory("mongodb://127.0.0.1:27017/dirshare_test")
+        elif scheme == 'sqlite':
+            self.db = data_access_factory("sqlite://:memory:")
+        self.log.info("Using %s data access" % (scheme,) )
+        self.db.setup()
+        self.db.remove_resizes()
+        self.db.remove_all_metadata()
+
     def setUp(self):
         from . import utils
-        
+
+        logging.basicConfig( stream=sys.stderr )
+        logging.getLogger( "dirshare.tests" ).setLevel( logging.DEBUG )
+        self.log = logging.getLogger( "dirshare.tests" )
+
         settings = {
             'image_sizes': "128x128 600x600 full",
             'images_per_page': 10,
             'images_root': '/',
             'resize_quality': 50,
             'resize_format': "JPEG",
-            'mongo_host': "localhost",
-            'mongo_port': 27017,
-            'mongo_db': "dirshare"
         }
-        
-        c = MongoClient(
-            settings.get('mongo_host'), 
-            settings.get('mongo_port'))
-
-        self.db = c[settings.get('mongo_db')]
-        
-        utils.db.setup(c[settings.get('mongo_db')])
-        
-        utils.db.RESIZES_COLL = 'resizes_test'
-        utils.db.METADATA_COLL = 'metadata_test'
-        
-        utils.db.remove_all_resizes_from_db(self.db)
 
         self.config = testing.setUp(settings=settings)
         self.img_data =\
@@ -143,53 +146,138 @@ AAAAAAAAAAAAEQEAEFFx/9oACAEBAAE/EKqtEHuSZE7v/9k='''
 
     def test_view_ajax_home(self):
         from .views import view_ajax_home
-        request = testing.DummyRequest()
-        info = view_ajax_home(request)
-        self.assertEqual(info, {})
-        
+
+        self.log.info("home view")
+        for scheme in ('sqlite', 'mongodb'):
+            self.setdb(scheme)
+            request = testing.DummyRequest()
+            info = view_ajax_home(request)
+            self.assertEqual(info, {})
+
+
     def test_view_ajax_listdir(self):
         from .views import view_ajax_listdir
         from .views import view_stream_image
         from . import utils
         import tempfile
 
-        d = tempfile.mkdtemp()
-        for i in range(11):
-            f = open(os.path.join(d, "%d.jpg" % (i,)), 'w')
-            f.write(b64decode(self.img_data))
-            f.close()
+        self.log.info("list dir view")
+        for scheme in ('sqlite', 'mongodb'):
+            self.setdb(scheme)
+            d = tempfile.mkdtemp()
+            for i in range(11):
+                f = open(os.path.join(d, "%d.jpg" % (i,)), 'w')
+                f.write(b64decode(self.img_data))
+                f.close()
 
-        request = testing.DummyRequest()
+            request = testing.DummyRequest()
 
-        request.params['d'] = d
-        request.params['p'] = 0
-        info = view_ajax_listdir(request)
-        self.assertEqual(len(info['files']), 10)
-        
-        request.params['d'] = d
-        request.params['p'] = 1
-        info = view_ajax_listdir(request)
-        self.assertEqual(len(info['files']), 1)
-        
-        self.assertEqual(info['image_count'], 11)
-        
-        self.assertEqual(len(info['pages']), 2)
+            request.params['d'] = d
+            request.params['p'] = 0
+            info = view_ajax_listdir(request)
+            self.assertEqual(len(info['files']), 10)
 
-        request.params['d'] = d
-        request.params['p'] = 0
-        request.params['pp'] = 9999
-        info = view_ajax_listdir(request)
-        self.assertEqual(len(info['files']), 11)
+            request.params['d'] = d
+            request.params['p'] = 1
+            info = view_ajax_listdir(request)
+            self.assertEqual(len(info['files']), 1)
 
-        """
-        Force cache
-        """
-        for file_ in info['files']  :
-            frequest = testing.DummyRequest()
-            frequest.params['d'] = os.path.join(info['path'], file_['name'])
-            frequest.matchdict['size'] = "128x128"
-            frequest.db = self.db
-            view_stream_image(frequest)
+            self.assertEqual(info['image_count'], 11)
 
-        files_db = list(utils.db.get_all_resizes_from_db(self.db))
-        self.assertEqual(len(files_db), 11)
+            self.assertEqual(len(info['pages']), 2)
+
+            request.params['d'] = d
+            request.params['p'] = 0
+            request.params['pp'] = 9999
+            info = view_ajax_listdir(request)
+            self.assertEqual(len(info['files']), 11)
+
+            """
+            Force cache
+            """
+            for file_ in info['files']  :
+                frequest = testing.DummyRequest()
+                frequest.params['d'] = os.path.join(info['path'], file_['name'])
+                frequest.matchdict['size'] = "128x128"
+                frequest.db = self.db
+                view_stream_image(frequest)
+
+            files_db = list(self.db.get_resizes())
+            self.assertEqual(len(files_db), 11)
+
+
+    def test_data_access(self):
+        from .data_access import data_access_factory
+        from .utils import image
+        import tempfile
+        import exifread
+
+        self.log.info("data access")
+        for scheme in ('sqlite', 'mongodb'):
+            self.setdb(scheme)
+            d = tempfile.mkdtemp()  # make temp dir
+
+            files = [('test1.jpg' ), ('test2.png' ), ('test3.jpg' )]
+            sizes = ['128x128', '600x600', '1000x1000']
+
+            for fname in files:
+                path = os.path.join(d, fname)
+                f = open(path, 'w')
+                f.write(b64decode(self.img_data))  # create temp image file
+                f.close()
+                self.db.save_metadata(path, image.read_exif(path), image.get_mimetype(fname))
+                self.db.save_metadata(path, image.read_exif(path), image.get_mimetype(fname), force=True)
+                self.assertRaises(
+                    ValueError,
+                    self.db.save_metadata,
+                    path, image.read_exif(path), image.get_mimetype(fname))
+
+                self.assertIsNotNone(self.db.get_metadata(path))  # metadata is saved
+
+                for size in sizes:
+                    self.db.save_resize(path,
+                                   size,
+                                   b64decode(self.img_data),
+                                   image.get_mimetype(fname))
+                    self.db.save_resize(path,
+                                   size,
+                                   b64decode(self.img_data),
+                                   image.get_mimetype(fname), force=True)
+                    self.assertRaises(
+                        ValueError,
+                        self.db.save_resize,
+                        path,
+                        size,
+                        b64decode(self.img_data),
+                        image.get_mimetype(fname))
+
+                    self.assertIsNotNone(self.db.get_resize(path,size))  # resize is saved
+
+            self.assertEqual(len(list(self.db.get_resizes())), len(files)*len(sizes))
+            self.assertEqual(len(list(self.db.get_all_metadata())), len(files))
+
+            self.db.remove_resizes()
+            self.db.remove_all_metadata()
+            self.assertEqual(len(list(self.db.get_resizes())), 0)
+            self.assertEqual(len(list(self.db.get_all_metadata())), 0)
+
+            # start over, empty db
+            for fname in files:
+                path = os.path.join(d, fname)
+                self.db.save_metadata(path, image.read_exif(path), image.get_mimetype(fname))
+
+                for size in sizes:
+                    self.db.save_resize(path,
+                                   size,
+                                   b64decode(self.img_data),
+                                   image.get_mimetype(fname))
+                    self.assertIsNotNone(self.db.get_resize(path, size))
+                    self.db.remove_resize(path, size)  # remove one resize
+                    self.assertIsNone(self.db.get_resize(path, size))
+
+                self.assertIsNotNone(self.db.get_metadata(path))
+                self.db.remove_metadata(path)  # remove one metadata
+                self.assertIsNone(self.db.get_metadata(path))
+
+            self.assertEqual(len(list(self.db.get_resizes())), 0)
+            self.assertEqual(len(list(self.db.get_all_metadata())), 0)

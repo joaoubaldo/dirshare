@@ -2,5 +2,5 @@
 main = dirshare:main
 
 [console_scripts]
-dirshare = dirshare.cli:main
+dirshare = dirshare.cli.start_waitress:main
 

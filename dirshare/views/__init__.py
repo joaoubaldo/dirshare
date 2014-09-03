@@ -1,6 +1,5 @@
 import os
 import math
-import mimetypes
 import json
 from base64 import b64encode, b64decode
 from datetime import datetime
@@ -47,8 +46,7 @@ def view_ajax_listdir(request):
     remaining = per_page
     for c in os.listdir(full_path):
         f = "%s/%s" % (full_path, c)
-        mt = mimetypes.guess_type(f)
-        if os.path.isfile(f) and mt[0] and mt[0].startswith('image'):
+        if utils.image.is_valid_image(f):
             files.append({'name': c})
         elif os.path.isdir(f):
             directories.append({'name': c})
@@ -82,11 +80,11 @@ def view_ajax_meta(request):
     if '..' in path: 
         return HTTPForbidden()
 
-    meta = utils.db.get_meta_from_db(request.db, full_path)
+    doc = request.db.get_metadata(full_path)
 
     return {
         'path': path,
-        'exif': meta['exif'] if meta else {}
+        'metadata': doc['metadata'] if doc and 'metadata' in doc else {}
         }
 
 @view_config(route_name='ajax_setup', renderer='json')
@@ -138,24 +136,45 @@ def view_stream_image(request):
     if size == 'full':
         f = open(full_path, 'r')
         data = f.read()
-        mime = utils.image.get_mimetype(full_path)
+        doc = request.db.get_metadata(full_path)
+        if not doc:
+            request.db.save_metadata(full_path,
+                utils.image.read_exif(full_path),
+                utils.image.get_mimetype(full_path), force=True)
+            mime = request.db.get_metadata(full_path)['mimetype']
+        else:
+            mime = doc['mimetype']
+
+        headers = [
+            ('Content-Type', str(mime)),
+            ('Content-Length', str(len(data))),
+            ('Content-Disposition', str("attachment; filename=\"%s\"" %
+                (os.path.basename(full_path),)))
+            ]
     else:
-        doc = utils.db.get_resize_from_db(request.db, full_path, size)
+        doc = request.db.get_resize(full_path, size)
         if not doc:
             data = utils.image.resize(full_path, size, format_, quality)
-            doc = utils.db.save_resize_to_db(request.db, full_path, size, 
-                data)
-            utils.db.save_meta_to_db(request.db, full_path, force=True)
+            request.db.save_resize(full_path, size, data,
+                utils.image.get_mimetype("dummy.%s" % (format_,)))
+            doc = request.db.get_resize(full_path, size)
 
-        data = b64decode(doc['content'])
-        mime = doc['mime_type']
-        
-    headers = [
-        ('Content-Type', str(mime)),
-        ('Content-Length', str(len(data))),
-        ('Content-Disposition', str("attachment; filename=\"%s\"" % 
-            (os.path.basename(full_path),)))
-        ]
+            request.db.save_metadata(full_path,
+                utils.image.read_exif(full_path),
+                utils.image.get_mimetype(full_path), force=True)
+        else:
+            data = b64decode(doc['content'])
+
+        fname = "%s.%s" % (
+            os.path.splitext(os.path.basename(full_path))[0],
+            format_)
+
+        headers = [
+            ('Content-Type', str(doc['mimetype'])),
+            ('Content-Length', str(len(data))),
+            ('Content-Disposition', str("attachment; filename=\"%s\"" %
+                (fname,)))
+            ]
 
     resp = Response(body=data, headerlist=headers)
     resp.md5_etag(data)
@@ -191,7 +210,7 @@ def view_zip(request):
     zip_.close()
 
     data = zdata.getvalue()
-    zip_type = mimetypes.guess_type('dummy.zip')[0]
+    zip_type = utils.image.get_mimetype('dummy.zip')
     headers = [('Content-Type', str(zip_type)),
            ('Cache-Control', 'no-cache'),
            ('Content-Length', str(len(data))),

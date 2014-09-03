@@ -3,29 +3,33 @@
 from pyramid.events import NewRequest
 from pyramid.events import subscriber
 from pyramid.config import Configurator
-from pymongo.mongo_client import MongoClient
+
+from dirshare.data_access import data_access_factory
+
+VERSION = "0.6"
 
 
-def get_mongo_db(request):
-    from dirshare import utils
+def get_db(request):
     """
-    Reads app settings and returns a mongo Database instance.
+    Reads app settings and returns a IDirshareDataAccess instance.
 
     @param is the Request object
-    @returns mongodb Database instance
+    @returns IDirshareDataAccess instance
     """
+
     s = request.registry.settings
-    c = MongoClient(s.get('mongo_host'), int(s.get('mongo_port')))
-    utils.db.setup(c[s.get('mongo_db')])
-    return c[s.get('mongo_db')]
+    db = data_access_factory(s.get('db_uri'))
+    db.setup()
+
+    return db
 
 
 @subscriber(NewRequest)
-def add_mongo_db(event):
+def add_db(event):
     """
     Event handler
     """
-    event.request.set_property(get_mongo_db, 'db', reify=True)
+    event.request.set_property(get_db, 'db', reify=True)
 
 
 def main(global_config, **settings):

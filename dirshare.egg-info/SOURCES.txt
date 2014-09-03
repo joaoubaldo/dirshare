@@ -5,7 +5,6 @@ README.txt
 development.ini
 setup.py
 dirshare/__init__.py
-dirshare/cli.py
 dirshare/tests.py
 dirshare.egg-info/PKG-INFO
 dirshare.egg-info/SOURCES.txt
@@ -14,6 +13,9 @@ dirshare.egg-info/entry_points.txt
 dirshare.egg-info/not-zip-safe
 dirshare.egg-info/requires.txt
 dirshare.egg-info/top_level.txt
+dirshare/cli/__init__.py
+dirshare/cli/from_pastedeploy.py
+dirshare/cli/start_waitress.py
 dirshare/static/css/bootstrap-theme.css
 dirshare/static/css/bootstrap-theme.min.css
 dirshare/static/css/bootstrap.css

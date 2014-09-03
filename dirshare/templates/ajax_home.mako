@@ -14,7 +14,6 @@
   </head>
   <body ng-controller="DirController">
     <div class="container">
-        <h2>Dirshare</h2>
         <ol id="path-breadcrumb" class="breadcrumb">
             <li ng-click="setPath('/')""><a href="#">root</a></li>
             <li ng-repeat="p in nav_path"  ng-if="p[1] !== ''" class="active">
@@ -28,8 +27,8 @@
                 <a class="pointer" ng-click="setPath(path + '/' + dir.name)">{{dir.name}}</a>
             </li>
             
-            <li ng-if="basket.length > 0" ng-class="{active: in_basket}">
-                <a class="pointer" ng-click="toggleInBasket()">
+            <li ng-if="basket.length > 0" ng-class="{active: currentView()=='basket'}">
+                <a class="pointer" ng-click="changeView('basket')">
                     <span class="glyphicon glyphicon-transfer"></span>
                     <span class="badge">{{basket.length}}</span>
                 </a>
@@ -61,13 +60,15 @@
             </div>
         </div>
 
+        <p class="bg-primary" ng-if="refreshing">Loading data...</p>
+
         <div ng-if="!refreshing">
         
             <!-- scroller -->
             <div class="full-width xscroll-only" ng-show="use_scroll">
                 <ul class="table xfull-width">
-                    <li class="cell-thumbnail cell-middle pointer" ng-repeat="photo in displayed_images">
-                        <img ng-src="{{dirws.thumbUrl(photo)}}" ng-click="clickImage(photo)" ng-class="{selected: inBasket(photo)}"/>
+                    <li class="cell-thumbnail cell-middle pointer" ng-repeat="photo in displayed_images" ng-click="clickImage(photo)">
+                        <img ng-src="{{dirws.thumbUrl(photo)}}" ng-class="{selected: inBasket(photo) && selecting}"/>
                     </li>
                 </ul>
             </div>
@@ -75,25 +76,24 @@
            
             <!-- grid -->
             <div ng-if="image === ''" class="row" ng-show="!use_scroll">
-                <div class="col-sm-2" ng-repeat="photo in displayed_images">
-                    <a class="thumbnail pointer" ng-class="{selected: inBasket(photo)}">
-                        <img ng-src="{{dirws.thumbUrl(photo)}}" ng-click="clickImage(photo)"/>
+                <div class="col-sm-2" ng-repeat="photo in displayed_images" ng-click="clickImage(photo)">
+                    <a class="thumbnail pointer" ng-class="{selected: inBasket(photo) && selecting}">
+                        <img ng-src="{{dirws.thumbUrl(photo)}}" />
                     </a>
                 </div>
             </div>
 
             <hr ng-if="image !== ''"> 
             <div ng-if="image !== ''" id="image-container" class="text-center row">
-                <div ng-class="show_exif ? 'col-sm-6': 'col-sm-12'">
-                    <!--<a ng-href="{{dirws.imageUrl(image, size)}}" target="_blank">-->
-                    <a ng-click="clickImage('')">                    
+                <div ng-class="(show_exif && !isEmptyExif()) ? 'col-sm-6': 'col-sm-12'">
+                    <a ng-click="clickImage('')">
                         <img ng-src="{{dirws.imageUrl(image, size)}}" class="full-width">
                     </a>
                 </div>
-                <div class="col-sm-6 panel" ng-show="show_exif">
+                <div class="col-sm-6 panel" ng-show="show_exif && !isEmptyExif()">
                     <div class="panel-body">
                         <dl class="dl-horizontal">
-                          <dt ng-repeat-start="(mkey, mvalue) in meta.exif">{{mkey}}</dt>
+                          <dt ng-repeat-start="(mkey, mvalue) in meta.metadata">{{mkey}}</dt>
                           <dd ng-repeat-end>{{mvalue}}</dd>
                         </dl>
                     </div>

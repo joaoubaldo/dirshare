@@ -2,8 +2,8 @@
 #
 
 """ 
-This module implements the CLI application, used to launch a server and 
-serve the dirshare wsgi application 
+This module implements the CLI application, used to launch a server and
+serve dirshare wsgi application given a pastedeploy ini file.
 """
 
 import os
@@ -12,7 +12,6 @@ from optparse import OptionParser
 
 from paste.deploy import loadapp
 from paste.deploy import loadserver
-
 
 
 ini_template = '''
@@ -32,10 +31,8 @@ pyramid.default_locale_name = en
 
 mako.directories = dirshare:templates
 
-# MongoDB configuration
-mongo_host = localhost
-mongo_port = 27017
-mongo_db = dirshare
+#db_uri = sqlite://:memory:
+db_uri = mongodb://localhost:27017/dirshare
 
 images_per_page = 10
 image_sizes = 128x128 600x600 1000x1000 full

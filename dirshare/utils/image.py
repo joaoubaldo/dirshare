@@ -52,5 +52,26 @@ def is_valid_image(path):
     @param path: is the image file to check.
     @return: True if path is an image, False otherwise.
     """
+    valid = ['image/gif', 'image/jpeg', 'image/png']
     mt = mimetypes.guess_type(path)
-    return os.path.isfile(path) and mt[0] and mt[0].startswith('image')
+    return os.path.isfile(path) and mt[0] and mt[0] in valid
+
+
+def read_exif(path):
+    """
+    Reads exif tags into a dict.
+
+    @param path: is the file path to read
+    @return: a dict with exif tags
+    """
+    f = open(path, 'r')
+    tags = exifread.process_file(f)
+    exif = {}
+    for k, v in tags.iteritems():
+        try:
+            str(v).decode('utf-8')
+            exif[k] = str(v)
+        except UnicodeDecodeError:
+            pass
+
+    return exif

@@ -89,7 +89,7 @@ Description: dirshare
         ---
         -  First public release
         
-Keywords: web pyramid pylons
+Keywords: web pyramid pylons gallery share
 Platform: UNKNOWN
 Classifier: Programming Language :: Python
 Classifier: Framework :: Pyramid

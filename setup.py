@@ -2,6 +2,8 @@ import os
 
 from setuptools import setup, find_packages
 
+from dirshare import VERSION
+
 here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.md')) as f:
     README = f.read()
@@ -20,7 +22,7 @@ requires = [
     ]
 
 setup(name='dirshare',
-      version='0.6',
+      version=VERSION,
       description='dirshare',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
@@ -32,7 +34,7 @@ setup(name='dirshare',
       author='Joao Coutinho',
       author_email='me at joaoubaldo.com',
       url='http://b.joaoubaldo.com',
-      keywords='web pyramid pylons',
+      keywords='web pyramid pylons gallery share',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
@@ -43,6 +45,6 @@ setup(name='dirshare',
         'paste.app_factory': 
             ['main = dirshare:main'],
         'console_scripts':
-            ['dirshare = dirshare.cli:main']
+            ['dirshare = dirshare.cli.start_waitress:main']
         }
       )
