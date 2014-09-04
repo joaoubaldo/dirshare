@@ -1,2 +1,4 @@
 include *.txt *.ini *.cfg *.rst *.md
 recursive-include dirshare *.ico *.png *.css *.gif *.jpg *.pt *.txt *.mak *.mako *.js *.html *.xml *.ttf *.woff *.eot *.svg
+prune .git
+exclude .gitignore
