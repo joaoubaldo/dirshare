@@ -83,14 +83,6 @@ def main():
         if hasattr(options, k) and getattr(options, k) is not None:
             cfg[k] = getattr(options, k)
 
-    ''' Parse db uri '''
-    db = urlparse(options.db_uri)
-    if db.scheme not in ['mongodb']:
-        raise ValueError("DB scheme not supported")
-    cfg['mongo_host'] = db.hostname
-    cfg['mongo_port'] = db.port
-    cfg['mongo_db'] = db.path[1:]
-
     ''' Boot log '''
     log.info("Config options:")
     for o in parser.option_list:

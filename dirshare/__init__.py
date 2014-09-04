@@ -6,7 +6,7 @@ from pyramid.config import Configurator
 
 from dirshare.data_access import data_access_factory
 
-VERSION = "0.6"
+VERSION = "0.7"
 
 
 def get_db(request):

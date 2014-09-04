@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: dirshare
-Version: 0.6
+Version: 0.7
 Summary: dirshare
 Home-page: http://b.joaoubaldo.com
 Author: Joao Coutinho
@@ -12,8 +12,8 @@ Description: dirshare
         Description
         -----------
         **dirshare** is a HTTP WSGI Python application to rapidly share images within 
-        a specific root path, leverages thumbnail caching (with MongoDb), 
-        instantaneous image resizing, file meta data extraction and zip file creation.
+        a specific root path, leverages thumbnail caching, instantaneous image 
+        resizing, file meta data extraction and zip file creation.
         
         The motivation to create this application is that occasionally I must browse a 
         large collection of photos, WITHOUT a dedicated server software, loading of 
@@ -23,7 +23,7 @@ Description: dirshare
         Requirements
         ------------
         - Setuptools (for installing dirshare and its Python dependencies)
-        - Access to a mongo database server
+        - (optional) Access to a mongo database server
         
         **Note** Pillow library uses system libraries to decode specific type of files.
         If you get "IOError: decoder XXX not available" while loading some images, 
@@ -63,17 +63,53 @@ Description: dirshare
         
         Usage
         -----
-            Usage: dirshare [options]
+        Usage: dirshare [options]
         
-            Options:
-              -h, --help            show this help message and exit
-              -c CONFIG, --config=CONFIG
-                                    Server configuration file path
-              -r IMAGES_ROOT, --images-root=IMAGES_ROOT
-                                    Root directory to share (will override config file)
-              -e EXAMPLE_INI, --example-ini=EXAMPLE_INI
-                                    Create an example ini file
+        Options:
+          -h, --help            show this help message and exit
+          -r IMAGES_ROOT, --images-root=IMAGES_ROOT
+                                Root directory to share (default: ".")
+          -s IMAGE_SIZES, --image-sizes=IMAGE_SIZES
+                                Available sizes as a string (default: "128x128 600x600
+                                1000x1000 full")
+          -f RESIZE_FORMAT, --resize-format=RESIZE_FORMAT
+                                Resize encoder to user (default: "PNG")
+          -q RESIZE_QUALITY, --resize-quality=RESIZE_QUALITY
+                                Resize quality value to pass to encoder (default: 90)
+          -d DB_URI, --db-uri=DB_URI
+                                DB uri (default: "mongodb://localhost:27017/dirshare")
+          -p HTTP_PORT, --http-port=HTTP_PORT
+                                HTTP listen port (default: 6543)
+          -b HTTP_IP, --http-ip=HTTP_IP
+                                HTTP bind ip (default: "127.0.0.1")
         
+        
+        Example:
+          dirshare -r /home/myself -s "128x128 500x500 full" -d "sqlite://:memory:"
+        
+        
+        0.7
+        ---
+        - mongodb is no longer mandatory. sqlite interface is available.
+        - new cli, without the need of ini files to start dirshare.
+        - new: data access interface class used for multiple dbs support
+        - new: sqlite data access implementation complete
+        - new: cli is now a module. New cli app with waitress http server, without pastedeploy ini
+        - updated: unit tests cover all data access methods, both mongodb and sqlite
+        - updated: variables renamed. They make more sense
+        - updated: added ensure_index to mongo DA setup()
+        - updated: config now uses db_uri instead of mongo db specific variables (preparation for sqlite integration)
+        - updated: utils.db removed. data access is centralized in IDirshareDataAccess implementations
+        - updated: thumbnails click area is corrected
+        - updated: better image file condition check
+        - updated: view flow is set in a LIFO stack ($scope.view_stack)
+        - updated: When there's no exif info for an image, don't resize image viewer ($scope.isEmptyExif())
+        - updated: selected thumbnails style is only applied in Select Mode.
+        - fixed: mongo da: save_metadata and save_resize were not updating correctly
+        - fixed: correct mimetype is returned in content-type http header for resizes
+        - fixed: correct content-disposition header for resizes
+        - fixed: javascript local function variables are marked local with 'var'
+        - fixed: When image is changed ($watch), $scope.refreshing is toggled until data is retrieved.
         
         0.6
         ---
