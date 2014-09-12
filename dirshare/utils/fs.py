@@ -20,6 +20,9 @@ def build_path_breadcrumb(path):
         path = path[1:]
     l = []
     res = []
+    if path.endswith('/'):
+        path = path[:-1]
+
     for d in path.split('/'):
         res.append( ('/'.join(l) if l else None, d) )
         l.append(d)

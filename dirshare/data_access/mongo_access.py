@@ -20,6 +20,7 @@ class MongoAccess (IDirshareDataAccess):
     '''
     __resizestable__ = 'resizes'
     __metadatatable__ = 'metadata'
+    __jobstable__ = 'jobs'
 
     def setup(self):
         db = urlparse(self.uri)
@@ -105,3 +106,28 @@ class MongoAccess (IDirshareDataAccess):
 
     def remove_all_metadata(self):
         self._db[self.__metadatatable__].remove()
+
+
+    def remove_job(self, name):
+        self._db[self.__jobstable__].remove({
+            "name": name
+        })
+
+    def save_job(self, name, options={}):
+        doc = {
+            'name': name,
+            'insert_date': datetime.now(),
+            'options': options
+        }
+        self._db[self.__jobstable__].save(doc)
+
+    def get_job(self, name):
+        return self._db[self.__jobstable__].find_one({
+            "name": name
+        })
+
+    def get_jobs(self):
+        return self._db[self.__jobstable__].find()
+
+    def remove_jobs(self):
+        self._db[self.__jobstable__].remove()

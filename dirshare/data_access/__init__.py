@@ -104,6 +104,22 @@ class IDirshareDataAccess:
         raise NotImplementedError
 
 
+    def remove_job(self, name):
+        raise NotImplementedError
+
+    def save_job(self, name, options={}):
+        raise NotImplementedError
+
+    def get_job(self, name):
+        raise NotImplementedError
+
+    def get_jobs(self):
+        raise NotImplementedError
+
+    def remove_jobs(self):
+        raise NotImplementedError
+
+
 
 def data_access_factory(uri):
     '''

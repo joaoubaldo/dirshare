@@ -213,12 +213,11 @@ AAAAAAAAAAAAEQEAEFFx/9oACAEBAAE/EKqtEHuSZE7v/9k='''
         import exifread
 
         self.log.info("data access")
+        files = [('test1.jpg' ), ('test2.png' ), ('test3.jpg' )]
+        sizes = ['128x128', '600x600', '1000x1000']
         for scheme in ('sqlite', 'mongodb'):
             self.setdb(scheme)
             d = tempfile.mkdtemp()  # make temp dir
-
-            files = [('test1.jpg' ), ('test2.png' ), ('test3.jpg' )]
-            sizes = ['128x128', '600x600', '1000x1000']
 
             for fname in files:
                 path = os.path.join(d, fname)
@@ -281,3 +280,38 @@ AAAAAAAAAAAAEQEAEFFx/9oACAEBAAE/EKqtEHuSZE7v/9k='''
 
             self.assertEqual(len(list(self.db.get_resizes())), 0)
             self.assertEqual(len(list(self.db.get_all_metadata())), 0)
+
+
+
+    def test_jobs(self):
+        from .data_access import data_access_factory
+        from threading import Thread
+        from .utils import image
+        import tempfile
+        import exifread
+
+        self.log.info("jobs")
+        what = 'thumbs_meta'
+        files = [('test1.jpg' ), ('test2.png' ), ('test3.jpg' )]
+        sizes = ['128x128', '600x600', '1000x1000']
+
+        for scheme in ('sqlite', 'mongodb'):
+            self.setdb(scheme)
+            d = tempfile.mkdtemp()  # make temp dir
+            jobs_created = []
+            for fname in files:
+                path = os.path.join(d, fname)
+                f = open(path, 'w')
+                f.write(b64decode(self.img_data))  # create temp image file
+                f.close()
+                options={'what': what,
+                         'path': path,
+                         'format': 'JPEG',
+                         'quality': 35,
+                         'sizes': sizes}
+
+                if not self.db.get_job('rebuild-%s-%s' % (what,path,)):
+                    self.db.save_job('rebuild-%s-%s' % (what,path,), options)
+                    jobs_created.append('rebuild-%s-%s' % (what,path,))
+
+                Thread(target=image.process_resize_jobs, args=(self.db, jobs_created))

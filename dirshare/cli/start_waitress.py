@@ -57,7 +57,7 @@ def main():
 
     parser.add_option("-f", "--resize-format",
         dest="resize_format", action="store", default="%(resize_format)s" % cfg,
-        help="Resize encoder to user (default: \"%(resize_format)s\")" % cfg)
+        help="Resize encoder to use (default: \"%(resize_format)s\")" % cfg)
 
     parser.add_option("-q", "--resize-quality",
         dest="resize_quality", action="store", default="%(resize_quality)d" % cfg,

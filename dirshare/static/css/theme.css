@@ -31,6 +31,10 @@
     padding: 4px;
 }
 
+.cell-thumbnail.selected {
+    background: orange;
+}
+
 .cell-thumbnail:hover {
     opacity: 0.6;
 }
@@ -46,3 +50,11 @@
     opacity: 0.5;
 }
 
+
+#scroll-view {
+    margin: 20px 10px;
+}
+
+#prev-next-nav {
+    margin: 5px 0px;
+}

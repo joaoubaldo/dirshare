@@ -6,8 +6,12 @@ from pyramid.config import Configurator
 
 from dirshare.data_access import data_access_factory
 
+
 VERSION = "0.7"
 
+import logging
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger("dirshare")
 
 def get_db(request):
     """
@@ -46,6 +50,9 @@ def main(global_config, **settings):
     config.add_route('ajax_listdir', '/app/listdir')
     config.add_route('ajax_meta', '/app/meta')
     config.add_route('ajax_setup', '/app/setup')
+    config.add_route('ajax_rebuild', '/app/rebuild')
+    config.add_route('ajax_getjobs', '/app/getjobs')
+
 
     config.scan()
     return config.make_wsgi_app()

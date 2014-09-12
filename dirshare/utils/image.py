@@ -75,3 +75,32 @@ def read_exif(path):
             pass
 
     return exif
+
+def process_resize_jobs(db, job_names):
+    """
+    Batch process a list of resize jobs.
+
+    @param db: IDataAccess instance
+    @param job_names: list of job names
+    """
+    for j in job_names:
+        job = db.get_job(j)
+        if job['options']['what'] == 'thumbs_meta':
+            data = resize(
+                job['options']['path'],
+                job['options']['sizes'][0],
+                job['options']['format'],
+                job['options']['quality'])
+
+            db.save_resize(job['options']['path'],
+                           job['options']['sizes'][0],
+                           data,
+                           get_mimetype(
+                               "dummy.%s" % (job['options']['format'],)),
+                           force=True)
+
+            db.save_metadata(job['options']['path'],
+                read_exif(job['options']['path']),
+                get_mimetype(job['options']['path']),
+                force=True)
+            db.remove_job(j)

@@ -30,28 +30,6 @@ Or:
 > python setup.py install
 
 
-Configuration and usage
------------------------
-1) Generate a .ini file:
-> dirshare -e <output.ini>
-
-2) Edit generated file and configured as needed (specially _images\_root_ 
-and mongo server settings). Most of the settings are self explanatory.
-
-3) Launch server:
-> dirshare -c <output.ini>
-
-4) Point a browser to dirshare's port (default 6543).
-
-* _images\_per\_page_ is the maximum number images to display per page. 
-This parameter can be overwritten in HTTP request, with 'pp' GET parameter.
-* _image\_sizes_ is a space separated list of (re)sizes available in a form 
-of MAX\_WIDTHxMAX\_HEIGHT. The image is resized to these values, with its 
-aspect ratio preserved. The first element in _image\_sizes_ is the thumbnail 
-size. Keyword _full_ is the original image.
-* _resize\_format_ is the encoder to use in image resizes.
-* _resize\_quality_ is the quality parameter used by image encoder.
-
 
 Usage
 -----
@@ -65,7 +43,7 @@ Options:
                         Available sizes as a string (default: "128x128 600x600
                         1000x1000 full")
   -f RESIZE_FORMAT, --resize-format=RESIZE_FORMAT
-                        Resize encoder to user (default: "PNG")
+                        Resize encoder to use (default: "PNG")
   -q RESIZE_QUALITY, --resize-quality=RESIZE_QUALITY
                         Resize quality value to pass to encoder (default: 90)
   -d DB_URI, --db-uri=DB_URI
@@ -77,4 +55,4 @@ Options:
 
 
 Example:
-  dirshare -r /home/myself -s "128x128 500x500 full" -d "sqlite://:memory:"
+  dirshare -r /home/myuser -s "128x128 500x500 full" -d "sqlite://:memory:"
