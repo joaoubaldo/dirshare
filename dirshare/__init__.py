@@ -7,7 +7,7 @@ from pyramid.config import Configurator
 from dirshare.data_access import data_access_factory
 
 
-VERSION = "0.7"
+VERSION = "0.8"
 
 import logging
 logging.basicConfig(level=logging.INFO)

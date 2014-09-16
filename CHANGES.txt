@@ -1,3 +1,40 @@
+0.8
+---
+updated: _waitForThumbs timeout set to 50ms
+updated: default view set to grid
+new: image count badge added to breadcrumb
+fixed: $scope.setSize was calling cacheSized instead of setImage
+updated: when image is de/selected, page is scrolled to correct position
+new: util function to rotate image from string data
+updated: all watches removed from controller. Actions are now taken inside setter methods.
+updated: added readyImage flag to check if selected image is preloaded
+updated: listDir and image requests are now retried when fail
+fixed: some buttons now Select are now available even if there are no images in current path
+new: loading image for listDir request added
+fixed: loading bar was showing wrong values; image cant be changed while previously is being loaded
+updated: dont allow path changes when isLoading()
+new: images service. image cache is now controlled in specific service. (code updated to use it)
+updated: files_paths is now returned from list dir view.
+updated: variables renamed to camelCase
+updated: .basket is now a list of full_path's
+updated: listdir returns 404 when unknown directory
+updated: $scope.image is a string again, to obey single-source-of-truth ($scope.images)
+updated: refreshImage() now loads cache when needed; fixed: nav_path doesnt add empty entry when / is last character; updated: buttonsare hidden when loading or no image in current path
+updated: metadata is no longer created inside stream_image for performance; logging added
+updated: metadata is only loaded when image is loaded;
+updated: when page section is changed, deferred received images are discarded
+updated: images are now structured in an JS object
+new: preloading thums with progress bar
+new: previous and next buttons for easy navigation
+updated: $scope.image is an object now
+updated: bool variables to control loading created.
+updated: keypress event captured to handle left and right keys.
+updated: split app.js into js files
+updated: manage panel, nav pills used for directories again
+new: polling routine
+update: app.js: path variable doesnt allow '//' anymore (should fix Windows problems)
+
+
 0.7
 ---
 - mongodb is no longer mandatory. sqlite interface is available.

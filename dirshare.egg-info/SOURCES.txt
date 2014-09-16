@@ -19,6 +19,7 @@ dirshare/cli/start_waitress.py
 dirshare/data_access/__init__.py
 dirshare/data_access/lite_access.py
 dirshare/data_access/mongo_access.py
+dirshare/static/loader.gif
 dirshare/static/css/bootstrap-theme.css
 dirshare/static/css/bootstrap-theme.css.map
 dirshare/static/css/bootstrap-theme.min.css
@@ -35,8 +36,10 @@ dirshare/static/js/angular.min.js.map
 dirshare/static/js/app.js
 dirshare/static/js/bootstrap.js
 dirshare/static/js/bootstrap.min.js
+dirshare/static/js/controllers.js
 dirshare/static/js/jquery-1.11.1.min.js
 dirshare/static/js/jquery.min.js
+dirshare/static/js/services.js
 dirshare/static/js/ui-bootstrap-0.11.0.min.js
 dirshare/templates/ajax_home.mako
 dirshare/utils/__init__.py
