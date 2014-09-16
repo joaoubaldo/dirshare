@@ -33,6 +33,7 @@ Or:
 
 Usage
 -----
+```bash
 Usage: dirshare [options]
 
 Options:
@@ -52,7 +53,9 @@ Options:
                         HTTP listen port (default: 6543)
   -b HTTP_IP, --http-ip=HTTP_IP
                         HTTP bind ip (default: "127.0.0.1")
-
+```
 
 Example:
+```bash
   dirshare -r /home/myuser -s "128x128 500x500 full" -d "sqlite://:memory:"
+```
