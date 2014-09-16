@@ -22,7 +22,7 @@
                 <a href="#" ng-if="!$last" ng-click="setPath((p[0] || '') + '/' + p[1])">
                     <span class="glyphicon glyphicon-folder-open">&nbsp;</span>
                     {{p[1]}}</a>
-                <span ng-if="$last"><span class="glyphicon glyphicon-folder-close">&nbsp;</span>{{p[1]}}</span>
+                <span ng-if="$last"><span class="glyphicon glyphicon-folder-close">&nbsp;</span>{{p[1]}} <span class="badge" ng-if="image_count > 0">{{image_count}}</span></span>
             </li>
         </ol>
 

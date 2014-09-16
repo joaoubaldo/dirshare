@@ -21,7 +21,7 @@ function($scope, $http, $location, $rootScope, $timeout, $element, $anchorScroll
     $scope.selecting = false;  // Select mode
     $scope.showMetadata = false;  // Show metadata?
     $scope.showManage = false;  // Show manage panel?
-    $scope.useScroll = true;  // Use scroll layout? Else grid
+    $scope.useScroll = false;  // Use scroll layout? Else grid
     $scope.basket = [];  // current set of images in basket (ex. to export)
     $scope.displayedImages = [];  // paths of images to be displayed
     $scope.viewStack = ['browsing'];  // Stack of views. Last item is current
@@ -120,7 +120,7 @@ function($scope, $http, $location, $rootScope, $timeout, $element, $anchorScroll
                 if ( (now - $scope.listDirTimer) > timeout) {
                     doRequest();
                 } else {
-                    $timeout(_waitForThumbs, 500);
+                    $timeout(_waitForThumbs, 50);
                 }
             }
 
