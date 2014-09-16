@@ -47,12 +47,14 @@ def view_ajax_listdir(request):
 
     directories = []
     files = []
+    files_paths = []
     remaining = per_page
     try:
         for c in os.listdir(full_path):
             f = "%s/%s" % (full_path, c)
             if utils.image.is_valid_image(f):
                 files.append({'name': c})
+                files_paths.append(os.path.join(path, c))
             elif os.path.isdir(f):
                 directories.append({'name': c})
 
@@ -71,6 +73,7 @@ def view_ajax_listdir(request):
         'pages': range(int(math.ceil(len(files)/float(per_page)))),
         'files': files[page*per_page:page*per_page+per_page],
         'directories': directories,
+        'files_paths': files_paths[page*per_page:page*per_page+per_page],
         'path': path
         }
 

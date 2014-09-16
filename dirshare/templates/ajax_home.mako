@@ -17,10 +17,12 @@
   <body ng-controller="DirController">
     <div class="container">
         <ol id="path-breadcrumb" class="breadcrumb">
-            <li ng-click="setPath('/')"><a href="#">root</a></li>
+            <li ng-click="setPath('/')"><a href="#"><span class="glyphicon glyphicon-home"></span></a></li>
             <li ng-repeat="p in nav_path" ng-if="p[1]" class="active" ng-if="readyPath">
-                <a href="#" ng-if="!$last" ng-click="setPath((p[0] || '') + '/' + p[1])">{{p[1]}}</a>
-                <span ng-if="$last">{{p[1]}}</span>
+                <a href="#" ng-if="!$last" ng-click="setPath((p[0] || '') + '/' + p[1])">
+                    <span class="glyphicon glyphicon-folder-open">&nbsp;</span>
+                    {{p[1]}}</a>
+                <span ng-if="$last"><span class="glyphicon glyphicon-folder-close">&nbsp;</span>{{p[1]}}</span>
             </li>
         </ol>
 
@@ -33,7 +35,7 @@
         </ul>
 
         <!-- buttons -->
-        <div ng-if="!isLoading() && hasDisplayedImages()">
+        <div>
 
             <!-- path selector -->
             <!--<div class="btn-group pointer" ng-if="directories.length > 0">
@@ -48,7 +50,7 @@
             </div>-->
 
             <!-- page selector -->
-            <div class="btn-group pointer">
+            <div class="btn-group pointer"  ng-if="!isLoading() && hasDisplayedImages()">
               <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
                 page {{page+1}} <span class="caret"></span>
               </button>
@@ -58,7 +60,7 @@
             </div>
 
             <!-- per page selector -->
-            <div class="btn-group pointer">
+            <div class="btn-group pointer"  ng-if="!isLoading() && hasDisplayedImages()">
               <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
                 x {{per_page}} <span class="caret"></span>
               </button>
@@ -68,7 +70,7 @@
             </div>
 
             <!-- size selector -->
-            <div class="btn-group pointer">
+            <div class="btn-group pointer"  ng-if="!isLoading() && hasDisplayedImages()">
               <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
                 {{size}} <span class="caret"></span>
               </button>
@@ -78,15 +80,15 @@
             </div>
 
             <!-- toggles -->
-            <div class="btn-group btn-group-sm">
-                <button type="button" class="btn btn-default" ng-click="toggleExif()" ng-class="{active: showMetadata}" title="Toggle EXIF information">Exif</button>
-                <button type="button" class="btn btn-default" ng-click="toggleScroll()" ng-class="{active: use_scroll}" title="Switch between scroll and grid display modes">Scroll</button>
+            <div class="btn-group btn-group-sm" ng-if="!isLoading()">
+                <button type="button" class="btn btn-default" ng-click="toggleMetadata()" ng-class="{active: showMetadata}" title="Toggle EXIF information" ng-if="basket.length > 0 || hasDisplayedImages()">Meta</button>
+                <button type="button" class="btn btn-default" ng-click="toggleScroll()" ng-class="{active: useScroll}" title="Switch between scroll and grid display modes" ng-if="basket.length > 0 || hasDisplayedImages()">Scroll</button>
                 <button type="button" class="btn btn-default" ng-click="toggleManage()" ng-class="{active: showManage}" title="Toggle managing panel">Manage</button>
             </div>
 
             <!-- select options -->
-            <div class="btn-group">
-              <button type="button" class="btn btn-sm btn-default" ng-click="toggleSelecting()" ng-class="{active: selecting}" title="Switch between select and view mode"><span class="badge" ng-if="basket.length > 0">{{basket.length}}</span> Select</button>
+            <div class="btn-group" ng-if="!isLoading()">
+              <button type="button" class="btn btn-sm btn-default" ng-click="toggleSelecting()" ng-class="{active: selecting}" title="Switch between select and view mode" ng-if="basket.length > 0 || hasDisplayedImages()"><span class="badge" ng-if="basket.length > 0">{{basket.length}}</span> Select</button>
               <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" ng-if="basket.length > 0">
                 <span class="caret"></span>
                 <span class="sr-only">Toggle Dropdown</span>
@@ -101,21 +103,18 @@
 
         <!-- manage panel -->
         <div class="panel panel-default" id="manage" ng-if="showManage">
-            <div class="panel-heading">Manage</div>
+            <div class="panel-heading"><span class="glyphicon glyphicon-cog"></span>Manage</div>
             <div class="panel-body">
-                <button disabled type="button" class="btn btn-default" ng-click="rebuild(path)">Rebuild cache</button>
+                <button disabled type="button" class="btn btn-default" ng-click="rebuild(path)"><span class="glyphicon glyphicon-refresh">&nbsp;</span>Rebuild cache</button>
+                <button type="button" class="btn btn-warning" ng-click="debugScope()"><span class="glyphicon glyphicon-bullhorn">&nbsp;</span>Debug $scope</button>
             </div>
-
-            <ul>
-                <li ng-repeat="job in jobs">{{job['name']}}</li>
-            </ul>
         </div>
 
         <!-- body -->
         <div>
 
             <!-- scroller -->
-            <div class="full-width xscroll-only" ng-if="use_scroll && readyThumbs" id="scroll-view">
+            <div class="full-width xscroll-only" ng-if="useScroll && readyThumbs" id="scroll-view">
                 <ul class="table xfull-width">
                     <li class="cell-thumbnail cell-middle pointer" ng-repeat="img in displayedImages" ng-click="clickImage(img)" ng-class="{selected: img == image}">
                         <img ng-src="{{dirws.thumbUrl(img)}}" ng-class="{selected: inBasket(img) && selecting}" id="{{img}}"/>
@@ -123,9 +122,8 @@
                 </ul>
             </div>
 
-
             <!-- grid -->
-            <div class="row" ng-if="!use_scroll && image == null && readyThumbs">
+            <div class="row" ng-if="!useScroll && image == null && readyThumbs">
                 <div class="col-sm-2" ng-repeat="img in displayedImages" ng-click="clickImage(img)">
                     <a class="thumbnail pointer" ng-class="{selected: inBasket(img) && selecting}">
                         <img ng-src="{{dirws.thumbUrl(img)}}" id="{{img}}"/>
@@ -134,33 +132,32 @@
             </div>
 
             <!-- progress bar -->
-            <div class="row" ng-if="!readyThumbs && dirws.keyCount(files) > 0">
+            <div class="row" ng-if="!readyThumbs && files_paths.length > 0">
                 <hr>
                 <div class="progress">
-                  <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" ng-style="{width: (thumbsLoaded / dirws.keyCount(images)) * 100.0+'%'}">
-                    {{thumbsLoaded}}
+                  <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" ng-style="{width: (displayedImages.length/files_paths.length)*100+'%'}">
+                    {{displayedImages.length}}
                   </div>
                 </div>
             </div>
 
         </div>
 
-
-        <div ng-if="image && !images[image].sizes[size].loaded" class="text-center">
-                <img src="${request.static_url('dirshare:static/loader.gif')}" />
+        <div ng-if="isLoading() || (image && isImageLoading)" class="text-center">
+            <img src="${request.static_url('dirshare:static/loader.gif')}" />
         </div>
 
-        <div ng-if="image && images[image].sizes[size].loaded">
+        <div ng-if="image && images.sizeLoaded(image, size)">
             <div id="image-container" class="text-center row">
-                <div ng-class="(showMetadata && !isEmptyExif()) ? 'col-sm-6': 'col-sm-12'">
+                <div ng-class="(showMetadata && images.hasMetadata(image)) ? 'col-sm-6': 'col-sm-12'">
                     <a ng-click="hideImage()">
-                        <img ng-src="{{images[image].sizes[size].url}}" class="full-width">
+                        <img ng-src="{{images.getSizeUrl(image, size)}}" class="full-width">
                     </a>
                 </div>
-                <div class="col-sm-6 panel" ng-show="showMetadata && !isEmptyExif()">
+                <div class="col-sm-6 panel" ng-show="showMetadata && images.hasMetadata(image)">
                     <div class="panel-body">
                         <dl class="dl-horizontal">
-                          <dt ng-repeat-start="(mkey, mvalue) in images[image].metadata.metadata">{{mkey}}</dt>
+                          <dt ng-repeat-start="(mkey, mvalue) in images.getMetadata(image)">{{mkey}}</dt>
                           <dd ng-repeat-end>{{mvalue}}</dd>
                         </dl>
                     </div>
@@ -168,7 +165,7 @@
 
             </div>
 
-            <ul class="pager" id="prev-next-nav" ng-if="images[image].sizes[size].loaded">
+            <ul class="pager" id="prev-next-nav" ng-if="readyThumbs">
               <li><a href="#" ng-click="showPrevImage()" ng-if="hasPrevImage()">Previous</a></li>
               <li><a href="#" ng-click="showNextImage()" ng-if="hasNextImage()">Next</a></li>
             </ul>

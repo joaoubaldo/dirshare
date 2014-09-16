@@ -35,6 +35,14 @@ def resize(path, size, format_, quality):
     return data_.getvalue()
 
 
+def rotate_data(data, angle, format_, quality):
+    f = Image.open(StringIO(data), 'r')
+    f = f.rotate(angle)
+    data_ = StringIO()
+    f.save(fp=data_, format=format_, quality=quality)
+    return data_.getvalue()
+
+
 def get_mimetype(path):
     """
     Get the mime type string for a specific file
