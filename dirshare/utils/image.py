@@ -60,7 +60,7 @@ def is_valid_image(path):
     @param path: is the image file to check.
     @return: True if path is an image, False otherwise.
     """
-    valid = ['image/gif', 'image/jpeg', 'image/png']
+    valid = ['image/gif', 'image/jpeg', 'image/png', 'image/pjpeg', 'image/x-png']
     mt = mimetypes.guess_type(path)
     return os.path.isfile(path) and mt[0] and mt[0] in valid
 

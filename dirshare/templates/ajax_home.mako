@@ -123,11 +123,13 @@
             </div>
 
             <!-- grid -->
-            <div class="row" ng-if="!useScroll && image == null && readyThumbs">
-                <div class="col-sm-2" ng-repeat="img in displayedImages" ng-click="clickImage(img)">
-                    <a class="thumbnail pointer" ng-class="{selected: inBasket(img) && selecting}">
-                        <img ng-src="{{dirws.thumbUrl(img)}}" id="{{img}}"/>
-                    </a>
+            <div class="grid" ng-show="!useScroll && image == null && readyThumbs">
+                <div class="row" ng-repeat="row in displayedImages|splitEvery:6">
+                    <div class="col-sm-2"  ng-repeat="img in row">
+                        <a class="thumbnail pointer" ng-class="{selected: inBasket(img) && selecting}" ng-click="clickImage(img)">
+                            <img ng-src="{{dirws.thumbUrl(img)}}" id="{{img}}"/>
+                        </a>
+                    </div>
                 </div>
             </div>
 

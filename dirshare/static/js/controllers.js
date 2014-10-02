@@ -1,3 +1,25 @@
+angular.module("dirshareApp").filter('splitEvery', function() {
+    var cache = {};
+    var filter = function(arr, size) {
+        if (!arr) {
+            return;
+        }
+        var newArr = [];
+        for (var i=0; i<arr.length; i+=size) {
+            newArr.push(arr.slice(i, i+size));
+        }
+        var arrString = JSON.stringify(arr);
+        var fromCache = cache[arrString+size];
+        if (JSON.stringify(fromCache) === JSON.stringify(newArr)) {
+            return fromCache;
+        }
+        cache[arrString+size] = newArr;
+        return newArr;
+    };
+    return filter;
+});
+
+
 angular.module("dirshareApp").controller(
 "DirController",
 ["$scope", "$http", "$location", "$rootScope", "$timeout", "$element", "$anchorScroll", "dirws", "images",
@@ -208,6 +230,25 @@ function($scope, $http, $location, $rootScope, $timeout, $element, $anchorScroll
         }
 
         doRequest();
+
+        /* preload previous and next */
+        var next = $scope.getNextImage($scope.image);
+        var prev = $scope.getPrevImage($scope.image);
+        if (prev)
+            images.cacheSized(
+                prev,
+                $scope.size,
+                function () {
+                }
+            );
+
+        if (next)
+            images.cacheSized(
+                next,
+                $scope.size,
+                function () {
+                }
+            );
     };
 
     $scope.hideImage = function() {
@@ -239,6 +280,26 @@ function($scope, $http, $location, $rootScope, $timeout, $element, $anchorScroll
         dirws.rebuild(dirws.cleanPath(path));
     };
 
+    $scope.getNextImage = function(full_path) {
+        var index = $scope.displayedImages.indexOf(full_path);
+        if (index != -1) {
+            if ((index+1) <= $scope.displayedImages.length-1) {
+                return images.getImage($scope.displayedImages[index+1]).full_path;
+            }
+        }
+        return null;
+    };
+
+    $scope.getPrevImage = function(full_path) {
+        var index = $scope.displayedImages.indexOf(full_path);
+        if (index != -1) {
+            if ((index-1) >= 0) {
+                return images.getImage($scope.displayedImages[index-1]).full_path;
+            }
+        }
+        return null;
+    };
+
     $scope.hasNextImage = function() {
         var index = $scope.displayedImages.indexOf($scope.image);
         if (index != -1)
@@ -256,22 +317,18 @@ function($scope, $http, $location, $rootScope, $timeout, $element, $anchorScroll
     };
 
     $scope.showNextImage = function() {
-        var index = $scope.displayedImages.indexOf($scope.image);
-        if (index != -1) {
-            if ((index+1) <= $scope.displayedImages.length-1) {
-                $scope.setImage(images.getImage($scope.displayedImages[index+1]).full_path);
-                $scope.$apply();  // FIX: this is bad, causing errors
-            }
+        var image = $scope.getNextImage($scope.image);
+        if (image != null) {
+            $scope.setImage(image);
+            $scope.$apply();
         }
     };
 
     $scope.showPrevImage = function() {
-        var index = $scope.displayedImages.indexOf($scope.image);
-        if (index != -1) {
-            if (index > 0) {
-                $scope.setImage(images.getImage($scope.displayedImages[index-1]).full_path);
-                $scope.$apply();  // FIX: this is bad, causing errors
-            }
+        var image = $scope.getPrevImage($scope.image);
+        if (image != null) {
+            $scope.setImage(image);
+            $scope.$apply();
         }
     };
 
