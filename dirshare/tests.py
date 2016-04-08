@@ -215,7 +215,7 @@ AAAAAAAAAAAAEQEAEFFx/9oACAEBAAE/EKqtEHuSZE7v/9k='''
         self.log.info("data access")
         files = [('test1.jpg' ), ('test2.png' ), ('test3.jpg' )]
         sizes = ['128x128', '600x600', '1000x1000']
-        for scheme in ('sqlite', 'mongodb'):
+        for scheme in ('sqlite',):
             self.setdb(scheme)
             d = tempfile.mkdtemp()  # make temp dir
 
