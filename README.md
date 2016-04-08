@@ -1,6 +1,8 @@
 dirshare
 ========
 
+[![Build Status](https://travis-ci.org/joaoubaldo/dirshare.svg?branch=master)](https://travis-ci.org/joaoubaldo/dirshare)
+
 Description
 -----------
 **dirshare** is a HTTP WSGI Python application to rapidly share images within 
