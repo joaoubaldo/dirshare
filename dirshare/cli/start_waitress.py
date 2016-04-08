@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #
 
-""" 
+"""
 This module implements the CLI application, used to launch a server and
 serve dirshare wsgi application using waitress server.
 """
@@ -19,7 +19,7 @@ except ImportError:
 
 from waitress import serve
 
-from dirshare import main as m
+from dirshare.app import main as m
 from dirshare import VERSION
 
 cfg = {
@@ -47,7 +47,7 @@ def main():
     """
     parser = OptionParser()
 
-    parser.add_option("-r", "--images-root", 
+    parser.add_option("-r", "--images-root",
         dest="images_root", action="store", default="%(images_root)s" % cfg,
         help="Root directory to share (default: \"%(images_root)s\")" % cfg)
 
