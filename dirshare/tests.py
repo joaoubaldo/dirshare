@@ -15,7 +15,7 @@ class ViewTests(unittest.TestCase):
         from .data_access import data_access_factory
 
         if scheme == 'mongodb':
-            self.db = data_access_factory("mongodb://127.0.0.1:27017/dirshare_test")
+            self.db = data_access_factory("sqlite://:memory:")  # HACK: temp. disabled until mongodb is mocked
         elif scheme == 'sqlite':
             self.db = data_access_factory("sqlite://:memory:")
         self.log.info("Using %s data access" % (scheme,) )
@@ -195,7 +195,7 @@ AAAAAAAAAAAAEQEAEFFx/9oACAEBAAE/EKqtEHuSZE7v/9k='''
             """
             Force cache
             """
-            for file_ in info['files']  :
+            for file_ in info['files']:
                 frequest = testing.DummyRequest()
                 frequest.params['d'] = os.path.join(info['path'], file_['name'])
                 frequest.matchdict['size'] = "128x128"
@@ -215,7 +215,7 @@ AAAAAAAAAAAAEQEAEFFx/9oACAEBAAE/EKqtEHuSZE7v/9k='''
         self.log.info("data access")
         files = [('test1.jpg' ), ('test2.png' ), ('test3.jpg' )]
         sizes = ['128x128', '600x600', '1000x1000']
-        for scheme in ('sqlite',):
+        for scheme in ('sqlite', 'mongodb'):
             self.setdb(scheme)
             d = tempfile.mkdtemp()  # make temp dir
 
