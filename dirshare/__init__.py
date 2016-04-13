@@ -1,1 +1,5 @@
-VERSION = "0.8"
+"""
+dirshare module
+"""
+
+VERSION = "0.8.1"
